@@ -1,8 +1,7 @@
-#include <stdio.h>
 #include "interpreteur.h"
+#include <stdio.h>
 
-int main()
+void interpreteur()
 {
     printf("Hello World\n");
-    return 0;
 }
