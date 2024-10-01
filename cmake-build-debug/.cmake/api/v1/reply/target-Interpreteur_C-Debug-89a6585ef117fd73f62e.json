@@ -121,12 +121,12 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/interpreteur.c",
+			"path" : "src/lexer.c",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"path" : "src/interpreteur.h",
+			"path" : "src/lexer.h",
 			"sourceGroupIndex" : 1
 		},
 		{

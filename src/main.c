@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include "interpreteur.h"
+#include "lexer.h"
 
-int main()
+ int main()
 {
-    interpreteur();
+    lexer("3 + 4 * 8");
     return 0;
 }

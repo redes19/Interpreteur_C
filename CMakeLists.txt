@@ -6,6 +6,6 @@ set(CMAKE_C_STANDARD 11)
 include_directories(src)
 
 add_executable(Interpreteur_C
-        src/interpreteur.c
-        src/interpreteur.h
+        src/lexer.c
+        src/lexer.h
         src/main.c)

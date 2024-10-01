@@ -1,5 +1,5 @@
-#ifndef INTERPRETEUR_H
-#define INTERPRETEUR_H
+#ifndef LEXER_H
+#define LEXER_H
 
 typedef enum {
     NUMBER,
@@ -12,14 +12,14 @@ typedef enum {
     LPAREN,
     RPAREN,
     TOKEN_EOF,
-} tokenType;
+} TokenType;
 
 typedef struct {
-    tokenType type;
+    TokenType type;
     int value;
-} token;
+} Token;
 
 
-void interpreteur();
+Token *lexer(const char *input);
 
 #endif
