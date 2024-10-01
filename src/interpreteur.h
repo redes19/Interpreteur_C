@@ -11,7 +11,7 @@ typedef enum {
     POW,
     LPAREN,
     RPAREN,
-    TOEKN_EOF,
+    TOKEN_EOF,
 } tokenType;
 
 typedef struct {

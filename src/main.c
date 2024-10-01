@@ -3,6 +3,6 @@
 
 int main()
 {
-    printf("Hello World\n");
+    interpreteur();
     return 0;
 }
