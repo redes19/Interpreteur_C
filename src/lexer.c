@@ -1,10 +1,9 @@
 #include "lexer.h"
+
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-int is_number(char c) {
-    return c >= '0' && c <= '9';
-}
 
 const char *token_string(TokenType token) {
     switch (token) {
@@ -16,13 +15,36 @@ const char *token_string(TokenType token) {
             return "*";
         case DIV:
             return "/";
+        case LPAREN:
+            return "(";
+        case RPAREN:
+            return ")";
         default:return "Unknown";
     }
 }
 
+void new_token(TokenType type, int value, Token **tokens, int *i_token) {
+    Token *temp = realloc(*tokens, sizeof(Token) * (*i_token + 1));
+
+    // Vérifier si l'allocation de mémoire a réussi
+    if (temp == NULL) {
+        printf("Erreur d'allocation de mémoire\n");
+        exit(1);
+    }
+    // Réassigner le pointeur après realloc
+    *tokens = temp;
+
+    // Ajouter le nouveau token
+    (*tokens)[*i_token].type = type;
+    (*tokens)[*i_token].value = value;
+
+    // Incrémenter le compteur de tokens
+    (*i_token)++;
+}
+
 Token *lexer(const char *input)
 {
-    Token *tokens = malloc(sizeof(Token) * 100);
+    Token *tokens = NULL;
     int position = 0;
     int i_token = 0;
 
@@ -35,49 +57,41 @@ Token *lexer(const char *input)
         }
 
         // Tokeniser les nombres dans l'input
-        if(is_number(pos_char)) {
+        if(isdigit(pos_char)) {
             int number = 0;
-            while (is_number((input[position]))) {
+            while (isdigit((input[position]))) {
+                // Convertir le caractère en entier
                 number = number * 10 + (input[position] - '0');
                 position++;
             }
-            tokens[i_token].type = NUMBER;
-            tokens[i_token].value = number;
-            i_token++;
+            new_token(NUMBER, number, &tokens, &i_token);
             continue;
         }
 
         // Tokeniser les opérateurs dans l'input
         switch (pos_char) {
             case '+':
-                tokens[i_token].type = PLUS;
-                tokens[i_token].value = 0;
+                new_token(PLUS, 0, &tokens, &i_token);
                 break;
             case '-':
-                tokens[i_token].type = MINUS;
-                tokens[i_token].value = 0;
+                new_token(MINUS, 0, &tokens, &i_token);
                 break;
             case '*':
-                tokens[i_token].type = MULT;
-                tokens[i_token].value = 0;
+                new_token(MULT, 0, &tokens, &i_token);
                 break;
             case '/':
-                tokens[i_token].type = DIV;
-                tokens[i_token].value = 0;
+                new_token(DIV, 0, &tokens, &i_token);
                 break;
             case '(':
-                tokens[i_token].type = LPAREN;
-                tokens[i_token].value = 0;
+                new_token(LPAREN, 0, &tokens, &i_token);
                 break;
             case ')':
-                tokens[i_token].type = RPAREN;
-                tokens[i_token].value = 0;
+                new_token(RPAREN, 0, &tokens, &i_token);
                 break;
             default:
-                printf("Entrée invalide: %c\n", pos_char);
+                printf("Entrée invalid: %c\n", pos_char);
                 exit(1);
         }
-        i_token++;
         position++;
     }
 
