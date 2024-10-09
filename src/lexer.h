@@ -2,16 +2,16 @@
 #define LEXER_H
 
 typedef enum {
-    NUMBER,
-    PLUS,
-    MINUS,
-    MULT,
-    DIV,
-    MOD,
-    POW,
-    LPAREN,
-    RPAREN,
-    TOKEN_EOF,
+    NUMBER, // 0-9
+    IDENTIFIER, // a-z, A-Z
+    PLUS,   // +
+    MINUS,  // -
+    MULT,   // *
+    DIV,    // /
+    MOD,    // %
+    LPAREN, // (
+    RPAREN, // )
+    TOKEN_EOF,  // Fin de l'input
 } TokenType;
 
 typedef struct {
