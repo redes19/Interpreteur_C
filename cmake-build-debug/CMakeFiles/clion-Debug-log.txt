@@ -1,10 +1,20 @@
-C:\Users\Loris\AppData\Local\Programs\CLion\bin\cmake\win\x64\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=C:/Users/Loris/AppData/Local/Programs/CLion/bin/ninja/win/x64/ninja.exe -G Ninja -S C:\Users\Loris\Documents\GitHub\Interpreteur_C -B C:\Users\Loris\Documents\GitHub\Interpreteur_C\cmake-build-debug
--- The C compiler identification is GNU 14.2.0
+/Applications/CLion.app/Contents/bin/cmake/mac/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" -S /Users/matheopion/Desktop/Interpreteur_C -B /Users/matheopion/Desktop/Interpreteur_C/cmake-build-debug
+CMake Deprecation Warning:
+  Support for "Extra Generators" like
+
+    CodeBlocks
+
+  is deprecated and will be removed from a future version of CMake.  IDEs may
+  use the cmake-file-api(7) to view CMake-generated project build trees.
+
+
+-- The C compiler identification is AppleClang 16.0.0.16000026
 -- Detecting C compiler ABI info
 -- Detecting C compiler ABI info - done
--- Check for working C compiler: C:/Program Files/mingw64/bin/gcc.exe - skipped
+-- Check for working C compiler: /Library/Developer/CommandLineTools/usr/bin/cc - skipped
 -- Detecting C compile features
 -- Detecting C compile features - done
--- Configuring done (1.2s)
+-- Configuring done (1.5s)
 -- Generating done (0.0s)
--- Build files have been written to: C:/Users/Loris/Documents/GitHub/Interpreteur_C/cmake-build-debug
+-- Build files have been written to: /Users/matheopion/Desktop/Interpreteur_C/cmake-build-debug
+
