@@ -1,10 +1,8 @@
 # ninja log v6
-10	93	7501814674507455	CMakeFiles/Interpreteur_C.dir/src/parser.c.obj	95f9ebcc3ee843ad
-5	79	7501814674467451	CMakeFiles/Interpreteur_C.dir/src/main.c.obj	eb24579cda129f62
-8	87	7501814674487456	CMakeFiles/Interpreteur_C.dir/src/ast.c.obj	ccab236d01ce6687
-2	91	7501814674427455	CMakeFiles/Interpreteur_C.dir/src/lexer.c.obj	d928e1ebf5fee2cd
-93	193	7501814675337458	Interpreteur_C.exe	91f7b344b356ce0c
-41	522	7502752335575348	build.ninja	c131c78d31d1a402
 20	342	7502752336344582	CMakeFiles/Interpreteur_C.dir/src/main.c.obj	eb24579cda129f62
 12	344	7502752336264543	CMakeFiles/Interpreteur_C.dir/src/lexer.c.obj	d928e1ebf5fee2cd
 344	572	7502752339589249	Interpreteur_C.exe	7bc84b0fc97ecdf0
+41	522	7503577635545278	build.ninja	c131c78d31d1a402
+13	112	7503578401533218	CMakeFiles/Interpreteur_C.dir/src/lexer.c.obj	d928e1ebf5fee2cd
+23	112	7503578401633226	CMakeFiles/Interpreteur_C.dir/src/main.c.obj	eb24579cda129f62
+112	244	7503578402533633	Interpreteur_C.exe	7bc84b0fc97ecdf0
