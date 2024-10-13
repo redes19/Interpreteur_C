@@ -9,4 +9,6 @@ add_executable(Interpreteur_C
         src/lexer.c
         src/lexer.h
         src/main.c
+        src/AST.c
+        src/AST.h
 )
