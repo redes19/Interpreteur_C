@@ -17,7 +17,7 @@ typedef struct {
 
 void print_ast(ASTNode *node);
 
-ASTNode *parser(Token *tokens);
+ASTNode *parser_ast(Token *tokens);
 
 
 

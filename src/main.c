@@ -8,7 +8,7 @@
      const char *input = "3 + 4 * 8";
      Token *tokens = lexer(input);
 
-     ASTNode *ast = parser(tokens);
+     ASTNode *ast = parser_ast(tokens);
      print_ast(ast);
 
      free(tokens);

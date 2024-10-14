@@ -71,6 +71,7 @@ ASTNode* create_ast_operator(char operator, ASTNode *left, ASTNode *right) {
     node->value = 0;
     node->left = left;
     node->right = right;
+
     return node;
 }
 
@@ -86,6 +87,7 @@ ASTNode* create_ast_node(int value) {
     node->value = value;
     node->left = NULL;
     node->right = NULL;
+
     return node;
 }
 
@@ -120,7 +122,7 @@ void print_ast(ASTNode *node) {
     }
 }
 
-ASTNode *parser(Token *tokens) {
+ASTNode *parser_ast(Token *tokens) {
     Stack operators = create_stack(); // Contiendra les opérateurs
     Stack output = create_stack(); // Contiendra les noeuds de l'AST
 
@@ -162,8 +164,8 @@ ASTNode *parser(Token *tokens) {
     }
 
     // Ajouter les opérateurs restants à la pile output
+    printf("Finalizing operator stack\n");
     while (!is_empty(&operators)) {
-        printf("Finalizing operator stack\n");
         Token *op = pop(&operators);
         ASTNode* right = pop(&output);
         ASTNode* left = pop(&output);
