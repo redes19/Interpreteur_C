@@ -20,37 +20,37 @@ int is_empty(Stack *stack) {
 }
 
 // Fonction pour ajouter une valeur à la pile
-int push(Stack *stack, int value) {
+void push(Stack *stack, void *value) {
     if(stack->top < MAX - 1) {
-        return stack->data[++stack->top] = value; // increment le tableau et ajoute value
+        stack->data[++stack->top] = value; // increment le tableau et ajoute value
     } else {
-        printf("Stack overflow\n");
+        printf("Stack empty\n");
         exit(1);
     }
 }
 
 // Fonction pour retirer une valeur de la pile
-int pop(Stack *stack) {
+void *pop(Stack *stack) {
     if(!is_empty(stack)){
         return stack->data[stack->top--];
     } else {
-        printf("Stack underflow\n");
+        printf("Stack empty\n");
         exit(1);
     }
 }
 
 // Fonction pour voir la valeur au sommet de la pile
-int peek(Stack *stack) {
+void *peek(Stack *stack) {
     if (!is_empty(stack)) {
         return stack->data[stack->top];
     } else {
-        printf("Stack underflow\n");
+        printf("Stack empty\n");
         exit(1);
     }
 }
 
 // Fonction qui retourne la priorité d'un oparateur
-int precedence(TokenType type) {
+int order(TokenType type) {
     if (type == MULT || type == DIV || type == MOD) {
         return 2;
     } else if (type == PLUS || type == MINUS) {
@@ -90,6 +90,35 @@ ASTNode* create_ast_node(int value) {
 }
 
 
+void print_ast(ASTNode *node) {
+    if (node == NULL) {
+        return;
+    }
+    print_ast(node->left);
+    print_ast(node->right);
+
+    if (node->type == NUMBER) {
+        printf("%d ", node->value);
+    } else {
+        switch (node->type) {
+            case PLUS:
+                printf("+ ");
+            break;
+            case MINUS:
+                printf("- ");
+            break;
+            case MULT:
+                printf("* ");
+            break;
+            case DIV:
+                printf("/ ");
+            break;
+            default:
+                printf("? ");
+            break;
+        }
+    }
+}
 
 ASTNode *parser(Token *tokens) {
     Stack operators = create_stack(); // Contiendra les opérateurs
@@ -100,24 +129,31 @@ ASTNode *parser(Token *tokens) {
 
     while (current_token.type != TOKEN_EOF) {
         if (current_token.type == NUMBER) { // Si le token est un nombre
-            push(&output, (int)create_ast_node(current_token.value));
-        } else if (is_operator(current_token.type)) {   // Si le token est un opérateur
-            // Créer un noeud d'opérateur et ajouter à la pile output
-            while(is_empty((&operators)) && precedence((peek(&operators))) >= precedence(current_token.type)) {
-                Token op = (Token)pop(&operators);
-                ASTNode *left = (ASTNode*)pop(&output);
-                ASTNode *right = (ASTNode*)pop(&output);
-                push(&output, (int)create_ast_operator(op.type, left, right));
+            printf("condition nombre \n");
+            push(&output, create_ast_node(current_token.value));
+        }else if (is_operator(current_token.type)) {   // Si le token est un opérateur
+            // Tant que la pile d'opérateurs contient des opérateurs avec une priorité supérieure ou égale
+            while(!is_empty(&operators) && order(((Token*)peek(&operators))->type) >= order(current_token.type)) {
+                Token *op = pop(&operators);
+                ASTNode *right = pop(&output);
+                ASTNode *left = pop(&output);
+                push(&output, create_ast_operator(op->type, left, right)); // Ajoute le noeud AST correspondant
             }
-            push(&operators, (int)current_token.type);
-        } else if (current_token.type == LPAREN) {  // Si le token est une parenthèse ouvrante
-            push(&output, (int)create_ast_node(current_token.type));
+            // Ajoute l'opérateur actuel à la pile
+            Token *opToken = malloc(sizeof(Token));
+            *opToken = current_token;
+            push(&operators, opToken);
+        }
+        else if (current_token.type == LPAREN) {  // Si le token est une parenthèse ouvrante
+            printf("condition parenthèse gauche\n");
+            push(&output, create_ast_node(current_token.type));
         } else if (current_token.type == RPAREN) {  // Si le token est une parenthèse fermante
-            while ((TokenType)peek(&operators) != RPAREN) {
-                Token op = (Token)pop(&operators);
-                ASTNode *left = (ASTNode*)pop(&output);
-                ASTNode *right = (ASTNode*)pop(&output);
-                push(&output, (int)create_ast_operator(op.type, left, right));
+            printf("condition droite\n");
+            while (((Token*)peek(&operators))->type != RPAREN) {
+                Token *op = pop(&operators);
+                ASTNode *left = pop(&output);
+                ASTNode *right = pop(&output);
+                push(&output, create_ast_operator(op->type, left, right));
             }
             pop(&operators);
         }
@@ -125,12 +161,14 @@ ASTNode *parser(Token *tokens) {
         current_token = tokens[pos];
     }
 
+    // Ajouter les opérateurs restants à la pile output
     while (!is_empty(&operators)) {
-        Token op = (Token)pop(&operators);
-        ASTNode* right = (ASTNode*)pop(&output);
-        ASTNode* left = (ASTNode*)pop(&output);
-        push(&output, (int)create_ast_operator(op.type, left, right));
+        printf("Finalizing operator stack\n");
+        Token *op = pop(&operators);
+        ASTNode* right = pop(&output);
+        ASTNode* left = pop(&output);
+        push(&output, create_ast_operator(op->type, left, right));
     }
 
-    return (ASTNode*)pop(&output);
+    return pop(&output);
 }

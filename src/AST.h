@@ -11,10 +11,14 @@ typedef struct ASTNode {
 } ASTNode;
 
 typedef struct {
-    int data[MAX];
+    void *data[MAX];
     int top;
 }Stack;
 
+void print_ast(ASTNode *node);
+
 ASTNode *parser(Token *tokens);
+
+
 
 #endif
