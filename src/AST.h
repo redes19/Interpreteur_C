@@ -19,6 +19,8 @@ void print_ast(ASTNode *node);
 
 ASTNode *parser_ast(Token *tokens);
 
+int eval_ast(ASTNode *node);
+
 
 
 #endif

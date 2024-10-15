@@ -12,6 +12,10 @@
      printf("retour node\n");
      print_ast(ast);
 
+
+     const int result = eval_ast(ast);
+     printf("\nResult : %d\n", result);
+
      free(tokens);
     return 0;
 }

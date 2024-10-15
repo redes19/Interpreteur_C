@@ -131,7 +131,6 @@ ASTNode *parser_ast(Token *tokens) {
 
     while (current_token.type != TOKEN_EOF) {
         if (current_token.type == NUMBER) { // Si le token est un nombre
-            printf("condition nombre \n");
             push(&output, create_ast_node(current_token.value));
         }else if (is_operator(current_token.type)) {   // Si le token est un opérateur
             // Tant que la pile d'opérateurs contient des opérateurs avec une priorité supérieure ou égale
@@ -147,16 +146,14 @@ ASTNode *parser_ast(Token *tokens) {
             push(&operators, opToken);
         }
         else if (current_token.type == LPAREN) {  // Si le token est une parenthèse ouvrante
-            printf("condition parenthèse gauche\n");
             Token *parentToken = malloc(sizeof(Token));
             *parentToken = current_token;
             push(&operators, parentToken);
         } else if (current_token.type == RPAREN) {  // Si le token est une parenthèse fermante
-            printf("condition parenthèse droite\n");
             while (!is_empty(&operators) && ((Token*)peek(&operators))->type != LPAREN) {
                 Token *op = pop(&operators);
-                ASTNode *left = pop(&output);
                 ASTNode *right = pop(&output);
+                ASTNode *left = pop(&output);
                 push(&output, create_ast_operator(op->type, left, right));
             }
             if (!is_empty(&operators)) {
@@ -177,4 +174,28 @@ ASTNode *parser_ast(Token *tokens) {
     }
 
     return pop(&output);
+}
+
+// Fonction pour évaluer AST
+int eval_ast(ASTNode *node) {
+    if (node->type == NUMBER) {
+        return node->value;
+    }
+
+    int left = eval_ast(node->left);
+    int right = eval_ast(node->right);
+
+    switch(node->type) {
+        case PLUS:
+            return left + right;
+        case MINUS:
+            return left - right;
+        case MULT:
+            return left * right;
+        case DIV:
+            return left / right;
+        default:
+            printf("Invalid operator\n");
+            exit(1);
+    }
 }
