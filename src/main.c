@@ -5,10 +5,11 @@
 
  int main()
 {
-     const char *input = "3 + 4 * 8";
+     const char *input = "3 + 4 * 2 / (5 - 2)";
      Token *tokens = lexer(input);
 
      ASTNode *ast = parser_ast(tokens);
+     printf("retour node\n");
      print_ast(ast);
 
      free(tokens);

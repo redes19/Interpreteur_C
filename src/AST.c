@@ -24,7 +24,7 @@ void push(Stack *stack, void *value) {
     if(stack->top < MAX - 1) {
         stack->data[++stack->top] = value; // increment le tableau et ajoute value
     } else {
-        printf("Stack empty\n");
+        printf("erreur 1\n");
         exit(1);
     }
 }
@@ -34,7 +34,7 @@ void *pop(Stack *stack) {
     if(!is_empty(stack)){
         return stack->data[stack->top--];
     } else {
-        printf("Stack empty\n");
+        printf("erreur 2\n");
         exit(1);
     }
 }
@@ -44,7 +44,7 @@ void *peek(Stack *stack) {
     if (!is_empty(stack)) {
         return stack->data[stack->top];
     } else {
-        printf("Stack empty\n");
+        printf("erreur 3\n");
         exit(1);
     }
 }
@@ -148,16 +148,20 @@ ASTNode *parser_ast(Token *tokens) {
         }
         else if (current_token.type == LPAREN) {  // Si le token est une parenthèse ouvrante
             printf("condition parenthèse gauche\n");
-            push(&output, create_ast_node(current_token.type));
+            Token *parentToken = malloc(sizeof(Token));
+            *parentToken = current_token;
+            push(&operators, parentToken);
         } else if (current_token.type == RPAREN) {  // Si le token est une parenthèse fermante
-            printf("condition droite\n");
-            while (((Token*)peek(&operators))->type != RPAREN) {
+            printf("condition parenthèse droite\n");
+            while (!is_empty(&operators) && ((Token*)peek(&operators))->type != LPAREN) {
                 Token *op = pop(&operators);
                 ASTNode *left = pop(&output);
                 ASTNode *right = pop(&output);
                 push(&output, create_ast_operator(op->type, left, right));
             }
-            pop(&operators);
+            if (!is_empty(&operators)) {
+                pop(&operators);
+            }
         }
         pos++;
         current_token = tokens[pos];
