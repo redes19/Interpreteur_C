@@ -1,5 +1,5 @@
 #include "lexer.h"
-
+#include <string.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -66,6 +66,24 @@ Token *lexer(const char *input)
             }
             new_token(NUMBER, number, &tokens, &i_token);
             continue;
+        }
+
+        // tokeniser les identifiants dans l'input
+        if(isalpha(pos_char)) {
+            int start_pos = position;
+            while (isalnum(pos_char)) {
+                position ++;
+            }
+            int length = position - start_pos; // taille de la variable
+            char *identifier = malloc(length + 1);
+            if (identifier == NULL ) {
+                printf("Erreur de mémoire\n");
+                exit(1);
+            }
+            memcpy(identifier, &input[start_pos], length);
+            identifier[length] = '\0';
+
+            
         }
 
         // Tokeniser les opérateurs dans l'input
