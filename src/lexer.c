@@ -23,7 +23,7 @@ const char *token_string(TokenType token) {
     }
 }
 
-void new_token(TokenType type, int value, Token **tokens, int *i_token) {
+void create_token(TokenType type, int value, Token **tokens, int *i_token) {
     Token *temp = realloc(*tokens, sizeof(Token) * (*i_token + 1));
 
     // Vérifier si l'allocation de mémoire a réussi
@@ -31,6 +31,7 @@ void new_token(TokenType type, int value, Token **tokens, int *i_token) {
         printf("Erreur d'allocation de mémoire\n");
         exit(1);
     }
+
     // Réassigner le pointeur après realloc
     *tokens = temp;
 
@@ -40,6 +41,22 @@ void new_token(TokenType type, int value, Token **tokens, int *i_token) {
 
     // Incrémenter le compteur de tokens
     (*i_token)++;
+}
+
+void create_token_identifier (const char *name, Token **tokens, int *i_token) {
+    Token *temp = realloc(*tokens, sizeof(Token) * (*i_token + 1));
+    if (temp == NULL) {
+        printf('Erreur d\'allocation de mémoire\n');
+        exit(1);
+    }
+
+    *tokens = temp;
+
+    (*tokens)[*i_token].type = IDENTIFIER;
+    (*tokens)[*i_token].identifier = strdup(name);
+
+    (*i_token++);
+
 }
 
 Token *lexer(const char *input)
@@ -64,7 +81,7 @@ Token *lexer(const char *input)
                 number = number * 10 + (input[position] - '0');
                 position++;
             }
-            new_token(NUMBER, number, &tokens, &i_token);
+            create_token(NUMBER, number, &tokens, &i_token);
             continue;
         }
 
@@ -80,31 +97,35 @@ Token *lexer(const char *input)
                 printf("Erreur de mémoire\n");
                 exit(1);
             }
-            memcpy(identifier, &input[start_pos], length);
+            memcpy(identifier, &input[start_pos], length); // copier la variable dans l'identifiant
             identifier[length] = '\0';
 
+            create_token_identifier(identifier, &tokens, &i_token);
             
         }
 
         // Tokeniser les opérateurs dans l'input
         switch (pos_char) {
             case '+':
-                new_token(PLUS, 0, &tokens, &i_token);
+                create_token(PLUS, 0, &tokens, &i_token);
                 break;
             case '-':
-                new_token(MINUS, 0, &tokens, &i_token);
+                create_token(MINUS, 0, &tokens, &i_token);
                 break;
             case '*':
-                new_token(MULT, 0, &tokens, &i_token);
+                create_token(MULT, 0, &tokens, &i_token);
                 break;
             case '/':
-                new_token(DIV, 0, &tokens, &i_token);
+                create_token(DIV, 0, &tokens, &i_token);
                 break;
             case '(':
-                new_token(LPAREN, 0, &tokens, &i_token);
+                create_token(LPAREN, 0, &tokens, &i_token);
                 break;
             case ')':
-                new_token(RPAREN, 0, &tokens, &i_token);
+                create_token(RPAREN, 0, &tokens, &i_token);
+                break;
+            case '=':
+                create_token(ASSIGN, 0, &tokens, &i_token);
                 break;
             default:
                 printf("Entrée invalide: %c\n", pos_char);
