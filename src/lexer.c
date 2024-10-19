@@ -19,7 +19,9 @@ const char *token_string(TokenType token) {
             return "(";
         case RPAREN:
             return ")";
-        default:return "Unknown";
+        case ASSIGN:
+            return "=";
+        default:return "NUMBER";
     }
 }
 
@@ -46,7 +48,7 @@ void create_token(TokenType type, int value, Token **tokens, int *i_token) {
 void create_token_identifier (const char *name, Token **tokens, int *i_token) {
     Token *temp = realloc(*tokens, sizeof(Token) * (*i_token + 1));
     if (temp == NULL) {
-        printf('Erreur d\'allocation de mémoire\n');
+        printf("Erreur d'allocation de mémoire \n");
         exit(1);
     }
 
@@ -55,8 +57,7 @@ void create_token_identifier (const char *name, Token **tokens, int *i_token) {
     (*tokens)[*i_token].type = IDENTIFIER;
     (*tokens)[*i_token].identifier = strdup(name);
 
-    (*i_token++);
-
+    (*i_token)++;
 }
 
 Token *lexer(const char *input)
@@ -87,8 +88,9 @@ Token *lexer(const char *input)
 
         // tokeniser les identifiants dans l'input
         if(isalpha(pos_char)) {
+            printf("IDENTIFIER\n");
             int start_pos = position;
-            while (isalnum(pos_char)) {
+            while (isalnum(input[position])) {
                 position ++;
             }
             int length = position - start_pos; // taille de la variable
@@ -101,7 +103,8 @@ Token *lexer(const char *input)
             identifier[length] = '\0';
 
             create_token_identifier(identifier, &tokens, &i_token);
-            
+            free(identifier);
+            continue;
         }
 
         // Tokeniser les opérateurs dans l'input
@@ -134,9 +137,13 @@ Token *lexer(const char *input)
         position++;
     }
 
-    /*for (int i = 0; i < i_token; i++) {
-        printf("Token %d: Type = %s, Value = %d\n", i, token_string(tokens[i].type), tokens[i].value);
-    }*/
+    for (int i = 0; i < i_token; i++) {
+        if (tokens[i].type == IDENTIFIER) {
+            printf("Token %d: Type : '%s', Identifier : %s\n", i, token_string(tokens[i].type), tokens[i].identifier);
+        } else {
+            printf("Token %d: Type : '%s', Value : %d\n", i, token_string(tokens[i].type), tokens[i].value);
+        }
+    }
 
     // Marquer la fin des tokens
     tokens[i_token].type = TOKEN_EOF;
