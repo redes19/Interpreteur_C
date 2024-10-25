@@ -28,7 +28,7 @@ void new_token(TokenType type, int value, Token **tokens, int *i_token) {
 
     // Vérifier si l'allocation de mémoire a réussi
     if (temp == NULL) {
-        printf("Erreur d'allocation de mémoire\n");
+        printf("Erreur d'allocation de memoire\n");
         exit(1);
     }
     // Réassigner le pointeur après realloc
@@ -89,7 +89,7 @@ Token *lexer(const char *input)
                 new_token(RPAREN, 0, &tokens, &i_token);
                 break;
             default:
-                printf("Caractère invalide à la position %d : %c\n", position, pos_char);
+                printf("Caractere invalide a la position %d : %c\n", position, pos_char);
                 exit(1);
         }
         position++;

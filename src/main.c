@@ -18,7 +18,7 @@ char *read_file(const char *filename) {
 
     char *content = malloc(file_size + 1);
     if (!content) {
-        printf("Erreur : Allocation de mémoire échouée\n");
+        printf("Erreur : Allocation de memoire echouee\n");
         exit(1);
     }
 
@@ -45,7 +45,7 @@ char *read_file(const char *filename) {
     ASTNode *ast = parse_expression(&parser);
 
     int result = eval(ast);
-    printf("Résultat : %d\n", result);
+    printf("Resultat : %d\n", result);
 
     free(tokens);
     free((void*)input);
