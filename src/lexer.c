@@ -89,7 +89,7 @@ Token *lexer(const char *input)
                 new_token(RPAREN, 0, &tokens, &i_token);
                 break;
             default:
-                printf("Entrée invalide: %c\n", pos_char);
+                printf("Caractère invalide à la position %d : %c\n", position, pos_char);
                 exit(1);
         }
         position++;
