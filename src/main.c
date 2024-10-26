@@ -1,19 +1,20 @@
 #include <stdio.h>
-#include "lexer.h"
 #include <stdlib.h>
-#include "parser.h"
-#include "ast.h"
+#include "lexer.h"
+#include "AST.h"
 
  int main()
 {
-     const char *input = "3 + 4 * 8";
+     const char *input = "3 + 4 * 2 / (5 - 2)";
      Token *tokens = lexer(input);
 
-     Parser parser = init_parser(tokens);
-     ASTNode *ast = parse_expression(&parser);
+     ASTNode *ast = parser_ast(tokens);
+     printf("retour node\n");
+     print_ast(ast);
 
-     int result = eval(ast);
-     printf("Résultat : %d\n", result);
+
+     const int result = eval_ast(ast);
+     printf("\nResult : %d\n", result);
 
      free(tokens);
     return 0;
