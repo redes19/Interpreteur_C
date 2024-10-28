@@ -91,6 +91,20 @@ ASTNode* create_ast_node(int value) {
     return node;
 }
 
+ASTNode* create_ast_expression(const ASTNode identifier, ASTNode *value) {
+    ASTNode *node = malloc(sizeof(ASTNode));
+    if (node == NULL) {
+        printf("Memory allocation error\n");
+        exit(1);
+    }
+
+    node->type = ASSIGN;
+    node->left = create_ast_node(identifier.value);
+    node->right = value;
+
+    return node;
+}
+
 
 void print_ast(ASTNode *node) {
     if (node == NULL) {
@@ -158,6 +172,15 @@ ASTNode *parser_ast(Token *tokens) {
             }
             if (!is_empty(&operators)) {
                 pop(&operators);
+            }
+        }
+        else if (current_token.identifier) {
+            Token nextToken = tokens[pos + 1];
+            if (nextToken.type == ASSIGN) {
+                pos = pos + 2;
+                ASTNode *value = parser_ast(&tokens[pos]);
+                const ASTNode *identifierNode = create_ast_node(current_token.value);
+                return create_ast_expression(*identifierNode, value);
             }
         }
         pos++;
