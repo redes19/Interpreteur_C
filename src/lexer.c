@@ -21,6 +21,8 @@ const char *token_string(TokenType token) {
             return ")";
         case ASSIGN:
             return "=";
+        case IDENTIFIER:
+            return "IDENTIFIER";
         default:return "NUMBER";
     }
 }
@@ -88,7 +90,6 @@ Token *lexer(const char *input)
 
         // tokeniser les identifiants dans l'input
         if(isalpha(pos_char)) {
-            printf("IDENTIFIER\n");
             int start_pos = position;
             while (isalnum(input[position])) {
                 position ++;

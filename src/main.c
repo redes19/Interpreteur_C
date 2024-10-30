@@ -17,6 +17,7 @@
      const int result = eval_ast(ast);
      printf("\nResult : %d\n", result);
 
+     free_ast(ast);
      free(tokens);
     return 0;
 }

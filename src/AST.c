@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include "AST.h"
 
+Variable variables[MAX_VAR];
+int variable_count = 0;
+
 // Fonction pour créer une pile stack (shunting yard algorithm)
 Stack create_stack() {
     Stack stack;
@@ -60,7 +63,7 @@ int order(TokenType type) {
     }
 }
 
-// Fonction pour créer un noeud d'operateur'
+// Fonction pour créer un noeud d'operateur
 ASTNode* create_ast_operator(char operator, ASTNode *left, ASTNode *right) {
     ASTNode *node = malloc(sizeof(ASTNode));
     if (node == NULL) {
@@ -91,7 +94,8 @@ ASTNode* create_ast_node(int value) {
     return node;
 }
 
-ASTNode* create_ast_expression(const ASTNode identifier, ASTNode *value) {
+// Fonction pour créer un noeud de l'AST qui correspond à un identifiant
+ASTNode* create_ast_expression(const char *identifier_name, ASTNode *value) {
     ASTNode *node = malloc(sizeof(ASTNode));
     if (node == NULL) {
         printf("Memory allocation error\n");
@@ -99,7 +103,13 @@ ASTNode* create_ast_expression(const ASTNode identifier, ASTNode *value) {
     }
 
     node->type = ASSIGN;
-    node->left = create_ast_node(identifier.value);
+    node->left = malloc(sizeof(ASTNode));
+    if(node->left == NULL) {
+        printf("Memory allocation error\n");
+        exit(1);
+    }
+    node->left->type = IDENTIFIER;
+    strncpy(node->left->name, identifier_name, MAX);
     node->right = value;
 
     return node;
@@ -110,31 +120,39 @@ void print_ast(ASTNode *node) {
     if (node == NULL) {
         return;
     }
+
     print_ast(node->left);
     print_ast(node->right);
 
-    if (node->type == NUMBER) {
-        printf("%d ", node->value);
-    } else {
-        switch (node->type) {
-            case PLUS:
-                printf("+ ");
-            break;
-            case MINUS:
-                printf("- ");
-            break;
-            case MULT:
-                printf("* ");
-            break;
-            case DIV:
-                printf("/ ");
-            break;
-            default:
-                printf("? ");
-            break;
-        }
+    switch (node->type) {
+        case NUMBER:
+            printf("%d ", node->value);
+        break;
+        case IDENTIFIER:
+            printf("%s ", node->name);
+        break;
+        case ASSIGN:
+            printf("= ");
+        break;
+        case PLUS:
+            printf("+ ");
+        break;
+        case MINUS:
+            printf("- ");
+        break;
+        case MULT:
+            printf("* ");
+        break;
+        case DIV:
+            printf("/ ");
+        break;
+        default:
+            printf("? ");
+        break;
     }
 }
+
+
 
 ASTNode *parser_ast(Token *tokens) {
     Stack operators = create_stack(); // Contiendra les opérateurs
@@ -174,13 +192,12 @@ ASTNode *parser_ast(Token *tokens) {
                 pop(&operators);
             }
         }
-        else if (current_token.identifier) {
+        else if (current_token.type == IDENTIFIER) { // Si le token est un identifiant
             Token nextToken = tokens[pos + 1];
             if (nextToken.type == ASSIGN) {
                 pos = pos + 2;
                 ASTNode *value = parser_ast(&tokens[pos]);
-                const ASTNode *identifierNode = create_ast_node(current_token.value);
-                return create_ast_expression(*identifierNode, value);
+                return create_ast_expression(current_token.identifier, value);
             }
         }
         pos++;
@@ -196,29 +213,92 @@ ASTNode *parser_ast(Token *tokens) {
         push(&output, create_ast_operator(op->type, left, right));
     }
 
-    return pop(&output);
+    if (is_empty(&output)) {
+        return NULL;
+    }
+
+    ASTNode *result = pop(&output);
+
+    while (!is_empty(&output)) {
+        free_ast(pop(&output));
+    }
+    return result;
 }
 
 // Fonction pour évaluer AST
 int eval_ast(ASTNode *node) {
-    if (node->type == NUMBER) {
-        return node->value;
+    if (node == NULL) {
+        return 0;
     }
 
-    int left = eval_ast(node->left);
-    int right = eval_ast(node->right);
-
-    switch(node->type) {
+    // Évaluer les nœuds selon leur type
+    switch (node->type) {
+        case NUMBER:
+            return node->value;
+        case IDENTIFIER:
+            return getVariable(node->name);
+        case ASSIGN:
+            setVariable(node->left->name, eval_ast(node->right));
+            return eval_ast(node->right);
         case PLUS:
-            return left + right;
+            return eval_ast(node->left) + eval_ast(node->right);
         case MINUS:
-            return left - right;
+            return eval_ast(node->left) - eval_ast(node->right);
         case MULT:
-            return left * right;
+            return eval_ast(node->left) * eval_ast(node->right);
         case DIV:
-            return left / right;
+            return eval_ast(node->left) / eval_ast(node->right);
         default:
-            printf("Invalid operator\n");
-            exit(1);
+            return 0;
+    }
+}
+
+
+
+void free_ast(ASTNode *node) {
+    if (node == NULL) {
+        return;
+    }
+    free_ast(node->left);
+    free_ast(node->right);
+    free(node);
+}
+
+void free_tokens(Token *tokens, int count) {
+    for (int i = 0; i < count; i++) {
+        if (tokens[i].identifier) {
+            free(tokens[i].identifier);
+        }
+    }
+    free(tokens);
+}
+
+int getVariable(const char *name) {
+    for (int i = 0; i < variable_count; i++) {
+        if (strcmp(variables[i].name, name) == 0) {
+            return variables[i].value;
+        }
+    }
+
+    printf("Erruer: Variable %s non déclarée\n", name);
+    exit(1);
+}
+
+void setVariable(const char *name, int value) {
+    for (int i = 0; i < variable_count; i++) {
+        if (strcmp(variables[i].name, name) == 0) {
+            variables[i].value = value;
+            return;
+        }
+    }
+
+    if (variable_count < MAX_VAR) {
+        strncpy(variables[variable_count].name, name, MAX);
+        variables[variable_count].value = value;
+        variable_count++;
+    }
+    else {
+        printf(("Erreur avec la variable\n"));
+        exit(1);
     }
 }
