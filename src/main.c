@@ -6,7 +6,7 @@
  int main()
 {
      //const char *input = "3 + 4 * 2 / (5 - 2)";
-     const char *input = "xax = 3 + 3";
+     const char *input = "xax = (3 + 3) * (2 + 1)";
      Token *tokens = lexer(input);
 
      ASTNode *ast = parser_ast(tokens);
