@@ -95,7 +95,12 @@ ASTNode* create_ast_node(int value) {
 }
 
 // Fonction pour créer un noeud de l'AST qui correspond à un identifiant
-ASTNode* create_ast_expression(const char *identifier_name, ASTNode *value) {
+ASTNode* create_ast_expression(const char *identifier_name, int value) {
+    if (identifier_name == NULL) {
+        printf("Erreur: identifier_name est NULL\n");
+        exit(1);
+    }
+
     ASTNode *node = malloc(sizeof(ASTNode));
     if (node == NULL) {
         printf("Memory allocation error\n");
@@ -104,16 +109,30 @@ ASTNode* create_ast_expression(const char *identifier_name, ASTNode *value) {
 
     node->type = ASSIGN;
     node->left = malloc(sizeof(ASTNode));
-    if(node->left == NULL) {
+    if (node->left == NULL) {
         printf("Memory allocation error\n");
         exit(1);
     }
+
     node->left->type = IDENTIFIER;
     strncpy(node->left->name, identifier_name, MAX);
-    node->right = value;
+    node->right = malloc(sizeof(ASTNode));
+    if (node->right == NULL) {
+        printf("Memory allocation error\n");
+        exit(1);
+    }
+
+    // Stocke la valeur directement dans le nœud de droite en tant que NUMBER
+    node->right->type = NUMBER;
+    node->right->value = value;
+    node->right->left = NULL;
+    node->right->right = NULL;
+
 
     return node;
 }
+
+
 
 
 void print_ast(ASTNode *node) {
@@ -121,36 +140,24 @@ void print_ast(ASTNode *node) {
         return;
     }
 
-    print_ast(node->left);
-    print_ast(node->right);
-
-    switch (node->type) {
-        case NUMBER:
-            printf("%d ", node->value);
-        break;
-        case IDENTIFIER:
-            printf("%s ", node->name);
-        break;
-        case ASSIGN:
-            printf("= ");
-        break;
-        case PLUS:
-            printf("+ ");
-        break;
-        case MINUS:
-            printf("- ");
-        break;
-        case MULT:
-            printf("* ");
-        break;
-        case DIV:
-            printf("/ ");
-        break;
-        default:
-            printf("? ");
-        break;
+    if (node->type == ASSIGN) {
+        printf("%s ", node->left->name);
+        printf("= ");
+        print_ast(node->right);
+    } else if( node->type == NUMBER) {
+        printf("%d ", node->value);
+    } else {
+        switch (node->type) {
+            case PLUS: printf(" + "); break;
+            case MINUS: printf(" - "); break;
+            case MULT: printf(" * "); break;
+            case DIV: printf(" / "); break;
+            default: printf(" ? "); break;
+        }
     }
+
 }
+
 
 
 
@@ -163,8 +170,10 @@ ASTNode *parser_ast(Token *tokens) {
 
     while (current_token.type != TOKEN_EOF) {
         if (current_token.type == NUMBER) { // Si le token est un nombre
+            //printf("N\n");
             push(&output, create_ast_node(current_token.value));
         }else if (is_operator(current_token.type)) {   // Si le token est un opérateur
+            //printf("O\n");
             // Tant que la pile d'opérateurs contient des opérateurs avec une priorité supérieure ou égale
             while(!is_empty(&operators) && order(((Token*)peek(&operators))->type) >= order(current_token.type)) {
                 Token *op = pop(&operators);
@@ -193,10 +202,13 @@ ASTNode *parser_ast(Token *tokens) {
             }
         }
         else if (current_token.type == IDENTIFIER) { // Si le token est un identifiant
+            //printf("I\n");
             Token nextToken = tokens[pos + 1];
             if (nextToken.type == ASSIGN) {
-                pos = pos + 2;
-                ASTNode *value = parser_ast(&tokens[pos]);
+                pos += 2;
+
+                int value = eval_ast(parser_ast(&tokens[pos]));
+
                 return create_ast_expression(current_token.identifier, value);
             }
         }
@@ -222,6 +234,8 @@ ASTNode *parser_ast(Token *tokens) {
     while (!is_empty(&output)) {
         free_ast(pop(&output));
     }
+
+
     return result;
 }
 
@@ -252,7 +266,6 @@ int eval_ast(ASTNode *node) {
             return 0;
     }
 }
-
 
 
 void free_ast(ASTNode *node) {

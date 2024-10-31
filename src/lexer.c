@@ -138,13 +138,13 @@ Token *lexer(const char *input)
         position++;
     }
 
-    for (int i = 0; i < i_token; i++) {
+    /*for (int i = 0; i < i_token; i++) {
         if (tokens[i].type == IDENTIFIER) {
             printf("Token %d: Type : '%s', Identifier : %s\n", i, token_string(tokens[i].type), tokens[i].identifier);
         } else {
             printf("Token %d: Type : '%s', Value : %d\n", i, token_string(tokens[i].type), tokens[i].value);
         }
-    }
+    }*/
 
     // Marquer la fin des tokens
     tokens[i_token].type = TOKEN_EOF;
