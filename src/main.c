@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include "lexer.h"
 #include <stdlib.h>
+#include "lexer.h"
 #include "parser.h"
-#include "ast.h"
+#include "AST.h"
 
 // Fonction pour lire les instructions d'un fichier
 char *read_file(const char *filename) {
@@ -30,17 +30,18 @@ char *read_file(const char *filename) {
 }
 
  int main(int argc, char *argv[])
-{
+ {
+    const char *input;
+
     if (argc < 2) {
-        printf("Usage: %s <fichier>\n", argv[0]);
-        return 1;
+        printf("Aucun fichier fourni. Utilisation de l'expression par defaut.\n");
+        input = "3 + 4 * 2 / (5 - 2)";
+    } else {
+        // Lire les instructions à partir du fichier au lieu de l'écrire en dur
+        input = read_file(argv[1]);
     }
 
-    // Lire les instructions à partir du fichier au lieu de l'écrire en dur
-    const char *input = read_file(argv[1]);
-
     Token *tokens = lexer(input);
-
     Parser parser = init_parser(tokens);
     ASTNode *ast = parse_expression(&parser);
 
@@ -48,6 +49,6 @@ char *read_file(const char *filename) {
     printf("Resultat : %d\n", result);
 
     free(tokens);
-    free((void*)input);
+    if (argc >= 2) free((void*)input);
     return 0;
 }

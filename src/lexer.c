@@ -95,9 +95,9 @@ Token *lexer(const char *input)
         position++;
     }
 
-    for (int i = 0; i < i_token; i++) {
+    /*for (int i = 0; i < i_token; i++) {
         printf("Token %d: Type = %s, Value = %d\n", i, token_string(tokens[i].type), tokens[i].value);
-    }
+    }*/
 
     // Marquer la fin des tokens
     tokens[i_token].type = TOKEN_EOF;
