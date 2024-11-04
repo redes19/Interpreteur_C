@@ -4,6 +4,7 @@
 #include "parser.h"
 #include "AST.h"
 
+
 // Fonction pour lire les instructions d'un fichier
 char *read_file(const char *filename) {
     FILE *file = fopen(filename, "r");
@@ -16,6 +17,7 @@ char *read_file(const char *filename) {
     long file_size = ftell(file);
     rewind(file);
 
+
     char *content = malloc(file_size + 1);
     if (!content) {
         printf("Erreur : Allocation de memoire echouee\n");
@@ -24,6 +26,7 @@ char *read_file(const char *filename) {
 
     fread(content, 1, file_size, file);
     content[file_size] = '\0';
+
 
     fclose(file);
     return content;
@@ -50,5 +53,6 @@ char *read_file(const char *filename) {
 
     free(tokens);
     if (argc >= 2) free((void*)input);
+
     return 0;
 }

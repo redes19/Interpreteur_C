@@ -11,12 +11,14 @@ typedef enum {
     MOD,    // %
     LPAREN, // (
     RPAREN, // )
+    ASSIGN, // =
     TOKEN_EOF,  // Fin de l'input
 } TokenType;
 
 typedef struct {
     TokenType type;
     int value;
+    char *identifier;
 } Token;
 
 
