@@ -23,6 +23,8 @@ const char *token_string(TokenType token) {
             return "=";
         case IDENTIFIER:
             return "IDENTIFIER";
+        case PRINT:
+            return "PRINT";
         default:return "NUMBER";
     }
 }
@@ -103,7 +105,12 @@ Token *lexer(const char *input)
             memcpy(identifier, &input[start_pos], length); // copier la variable dans l'identifiant
             identifier[length] = '\0';
 
-            create_token_identifier(identifier, &tokens, &i_token);
+            if (strncmp(identifier, "print", 5)==0) {
+                create_token(PRINT,0, &tokens, &i_token);
+            } else {
+                create_token_identifier(identifier, &tokens, &i_token);
+            }
+
             free(identifier);
             continue;
         }
@@ -138,13 +145,13 @@ Token *lexer(const char *input)
         position++;
     }
 
-    /*for (int i = 0; i < i_token; i++) {
+    for (int i = 0; i < i_token; i++) {
         if (tokens[i].type == IDENTIFIER) {
             printf("Token %d: Type : '%s', Identifier : %s\n", i, token_string(tokens[i].type), tokens[i].identifier);
         } else {
             printf("Token %d: Type : '%s', Value : %d\n", i, token_string(tokens[i].type), tokens[i].value);
         }
-    }*/
+    }
 
     // Marquer la fin des tokens
     tokens[i_token].type = TOKEN_EOF;

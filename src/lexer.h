@@ -12,6 +12,7 @@ typedef enum {
     LPAREN, // (
     RPAREN, // )
     ASSIGN, // =
+    PRINT,  // print
     TOKEN_EOF,  // Fin de l'input
 } TokenType;
 

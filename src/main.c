@@ -63,9 +63,10 @@ int main(int argc, char *argv[]) {
 
  int main()
  {
-     const char *input = "3 + 4 * 2 / (5 - 2)";
+     //const char *input = "3 + 4 * 2 / (5 - 2)";
      //const char *input = "xax = 3 + 3 * (2 + 1)";
      //const char *input = "a = (10 + 2) * 3";
+    const char *input = "print";
 
      Token *tokens = lexer(input);
 
