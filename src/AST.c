@@ -141,25 +141,29 @@ void print_ast(ASTNode *node) {
     }
 
     if (node->type == ASSIGN) {
-        printf("%s ", node->left->name);
-        printf("= ");
+        printf("%s = ", node->left->name);
         print_ast(node->right);
-    } else if( node->type == NUMBER) {
-        printf("%d ", node->value);
-    } else {
+    }
+    else if (node->type == NUMBER) {
+        printf("%d", node->value);
+    }
+    else {
+        // affiche les noeuds de l'AST
+        printf("(");
+        print_ast(node->left);
+
         switch (node->type) {
             case PLUS: printf(" + "); break;
             case MINUS: printf(" - "); break;
             case MULT: printf(" * "); break;
             case DIV: printf(" / "); break;
-            default: printf(" ? "); break;
+            default: break;
         }
+
+        print_ast(node->right);
+        printf(")");
     }
-
 }
-
-
-
 
 ASTNode *parser_ast(Token *tokens) {
     Stack operators = create_stack(); // Contiendra les opérateurs
@@ -170,10 +174,10 @@ ASTNode *parser_ast(Token *tokens) {
 
     while (current_token.type != TOKEN_EOF) {
         if (current_token.type == NUMBER) { // Si le token est un nombre
-            //printf("N\n");
+            //printf("N ");
             push(&output, create_ast_node(current_token.value));
         }else if (is_operator(current_token.type)) {   // Si le token est un opérateur
-            //printf("O\n");
+            //printf("O ");
             // Tant que la pile d'opérateurs contient des opérateurs avec une priorité supérieure ou égale
             while(!is_empty(&operators) && order(((Token*)peek(&operators))->type) >= order(current_token.type)) {
                 Token *op = pop(&operators);
@@ -187,10 +191,12 @@ ASTNode *parser_ast(Token *tokens) {
             push(&operators, opToken);
         }
         else if (current_token.type == LPAREN) {  // Si le token est une parenthèse ouvrante
+            //printf("LP ");
             Token *parentToken = malloc(sizeof(Token));
             *parentToken = current_token;
             push(&operators, parentToken);
         } else if (current_token.type == RPAREN) {  // Si le token est une parenthèse fermante
+            //printf("LR ");
             while (!is_empty(&operators) && ((Token*)peek(&operators))->type != LPAREN) {
                 Token *op = pop(&operators);
                 ASTNode *right = pop(&output);
@@ -202,22 +208,22 @@ ASTNode *parser_ast(Token *tokens) {
             }
         }
         else if (current_token.type == IDENTIFIER) { // Si le token est un identifiant
-            //printf("I\n");
+            //printf("I ");
             Token nextToken = tokens[pos + 1];
             if (nextToken.type == ASSIGN) {
                 pos += 2;
-
+                print_ast(parser_ast(&tokens[pos]));
                 int value = eval_ast(parser_ast(&tokens[pos]));
 
                 return create_ast_expression(current_token.identifier, value);
             }
+            push(&output, create_ast_expression(current_token.identifier, 0));
         }
         pos++;
         current_token = tokens[pos];
     }
 
     // Ajouter les opérateurs restants à la pile output
-    printf("Finalizing operator stack\n");
     while (!is_empty(&operators)) {
         Token *op = pop(&operators);
         ASTNode* right = pop(&output);
