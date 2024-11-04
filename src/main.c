@@ -48,7 +48,7 @@ char *read_file(const char *filename) {
     Parser parser = init_parser(tokens);
     ASTNode *ast = parse_expression(&parser);
 
-    int result = eval(ast);
+    int result = eval_ast(ast);
     printf("Resultat : %d\n", result);
 
     free(tokens);
