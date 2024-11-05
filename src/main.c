@@ -1,93 +1,60 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "lexer.h"
-#include "parser.h"
 #include "AST.h"
+#include <string.h>
 
+#define MAX_INPUT_LENGTH 1024
 
-// Fonction pour lire les instructions d'un fichier
-char *read_file(const char *filename) {
-    FILE *file = fopen(filename, "r");
-    if (!file) {
-        printf("Erreur : Impossible d'ouvrir le fichier %s\n", filename);
-        exit(1);
-    }
+int main() {
+    char input[MAX_INPUT_LENGTH];
 
-    fseek(file, 0, SEEK_END);
-    long file_size = ftell(file);
-    rewind(file);
+    printf("Bienvenue dans le super interpréteur ! Tapez 'exit' pour quitter.\n");
 
-
-    char *content = malloc(file_size + 1);
-    if (!content) {
-        printf("Erreur : Allocation de memoire echouee\n");
-        exit(1);
-    }
-
-    fread(content, 1, file_size, file);
-    content[file_size] = '\0';
-
-
-    fclose(file);
-    return content;
-}
-
-// Fonction REPL
-void start_repl() {
-    char input[MAX_INPUT_SIZE];
-
-    printf("Interpréteur REPL. Entrez 'exit' pour quitter.\n");
     while (1) {
-        printf(">> ");
-        if (!fgets(input, MAX_INPUT_SIZE, stdin)) {
-            printf("Erreur de lecture de l'entrée\n");
-            continue;
+        // Affiche un prompt
+        printf(">>> ");
+
+        // Lire l'entrée de l'utilisateur
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            break;
         }
 
-        // Enlever le caractère de nouvelle ligne
-        input[strcspn(input, "\n")] = 0;
+        // Supprimer le caractère de nouvelle ligne à la fin de l'entrée
+        input[strcspn(input, "\n")] = '\0';
 
-        // Condition de sortie
+        // Vérifier si l'utilisateur veut quitter
         if (strcmp(input, "exit") == 0) {
             break;
         }
 
-        // Lexer et parser
+        // Tokeniser l'entrée
         Token *tokens = lexer(input);
-        Parser parser = init_parser(tokens);
-        ASTNode *ast = parse_expression(&parser);
 
-        // Evaluation et affichage du résultat
-        int result = eval(ast);
+        // Parser les tokens en AST
+        ASTNode *ast = parser_ast(tokens);
+
+        if (ast == NULL) {
+            printf("Erreur : AST est NULL\n");
+            free(tokens);
+            continue;
+        }
+
+        // Afficher l'AST
+        printf("Arbre syntaxique : ");
+        print_ast(ast);
+        printf("\n");
+
+        // Évaluer l'AST et afficher le résultat
+        int result = eval_ast(ast);
         printf("Résultat : %d\n", result);
 
-        // Libérer la mémoire
-        free(tokens);
+        // Libérer la mémoire utilisée
         free_ast(ast);
-    }
-}
-
-int main(int argc, char *argv[])
-{
-    const char *input;
-
-    if (argc < 2) {
-        printf("Aucun fichier fourni. Utilisation de l'expression par defaut.\n");
-        input = "3 + 4 * 2 / (5 - 2)";
-    } else {
-        // Lire les instructions à partir du fichier au lieu de l'écrire en dur
-        input = read_file(argv[1]);
+        free(tokens);
     }
 
-    Token *tokens = lexer(input);
-    Parser parser = init_parser(tokens);
-    ASTNode *ast = parse_expression(&parser);
-
-    int result = eval(ast);
-    printf("Resultat : %d\n", result);
-
-    free(tokens);
-    if (argc >= 2) free((void*)input);
+    printf("Merci d'avoir utilisé le REPL de l'interpréteur C.\n");
 
     return 0;
 }
