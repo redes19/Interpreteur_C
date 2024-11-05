@@ -81,12 +81,14 @@ void interpreteur(const char *input) {
 
 void main()
 {
-    interpreteur("x = 10");
+    interpreteur("x = 5 + 5");
     interpreteur("print(x)");
-    interpreteur("y = 5");
-    interpreteur("print(y");
-    interpreteur("z = x + y");
-    interpreteur("print(z)");
+    interpreteur("l = x + 5");
+    interpreteur("print(l)");
+    //interpreteur("y = 9");
+    //interpreteur("print(y");
+    //interpreteur("z = x + y");
+    //interpreteur("print(z)");
 
 
     free_ast(ast);

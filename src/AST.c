@@ -212,13 +212,14 @@ ASTNode *parser(Token *tokens) {
             //printf("I ");
             Token nextToken = tokens[pos + 1];
             if (nextToken.type == ASSIGN) {
+                //printf("IN\n");
                 pos += 2;
-                //print_ast(parser(&tokens[pos]));
                 int value = eval_ast(parser(&tokens[pos]));
 
                 return create_ast_expression(current_token.identifier, value);
             }
-            push(&output, create_ast_expression(current_token.identifier, 0));
+            //printf("OUT\n");
+            push(&output, create_ast_expression(current_token.identifier, getVariable(current_token.identifier)));
         } else if (current_token.type == PRINT) {
             //printf("PRINT\n");
             Token nextToken = tokens[pos + 1];
@@ -255,6 +256,9 @@ ASTNode *parser(Token *tokens) {
         free_ast(pop(&output));
     }
 
+    /*printf("parser\n");
+    print_ast(result);
+    printf("\n");*/
 
     return result;
 }
@@ -272,8 +276,9 @@ int eval_ast(ASTNode *node) {
         case IDENTIFIER:
             return getVariable(node->name);
         case ASSIGN:
-            setVariable(node->left->name, eval_ast(node->right));
-            return eval_ast(node->right);
+            int value = eval_ast(node->right);
+            setVariable(node->left->name, value);
+            return value;
         case PLUS:
             return eval_ast(node->left) + eval_ast(node->right);
         case MINUS:
@@ -307,18 +312,19 @@ void free_tokens(Token *tokens, int count) {
 }
 
 int getVariable(const char *name) {
-    //printf("getVariables %s\n", name);
+    //printf("\ngetVariable %s\n", name);
     for (int i = 0; i < variable_count; i++) {
         if (strcmp(variables[i].name, name) == 0) {
             return variables[i].value;
         }
     }
 
-    printf("\nErreur: Variable non déclarée\n");
+    printf("\nErreur: Variable non declaree\n");
     exit(1);
 }
 
 void setVariable(const char *name, int value) {
+    //printf("\nsetVariable name: %s, value: %d\n", name, value);
     for (int i = 0; i < variable_count; i++) {
         if (strcmp(variables[i].name, name) == 0) {
             variables[i].value = value;
