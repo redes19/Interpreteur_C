@@ -61,28 +61,34 @@ int main(int argc, char *argv[]) {
 #include "lexer.h"
 #include "AST.h"
 
- int main()
- {
-     //const char *input = "3 + 4 * 2 / (5 - 2)";
-     //const char *input = "xax = 3 + 3 * (2 + 1)";
-     //const char *input = "a = (10 + 2) * 3";
-    const char *input = "print";
+Token *tokens;
+ASTNode *ast;
 
-     Token *tokens = lexer(input);
+void interpreteur(const char *input) {
+    tokens = lexer(input);
+    ast = parser(tokens);
 
-     ASTNode *ast = parser_ast(tokens);
-     if (ast == NULL) {
-         printf("Erreur: AST est NULL\n");
-         exit(1);
-     }
-     printf("\nretour node\n");
-     print_ast(ast);
+    /*printf("\nretour node\n");
+    print_ast(ast);*/
+
+    if (tokens[0].type == PRINT) {
+    } else {
+        int result = eval_ast(ast);
+        //printf("\nResultat : %d\n\n", result);
+    }
+
+}
+
+void main()
+{
+    interpreteur("x = 10");
+    interpreteur("print(x)");
+    interpreteur("y = 5");
+    interpreteur("print(y");
+    interpreteur("z = x + y");
+    interpreteur("print(z)");
 
 
-     const int result = eval_ast(ast);
-     printf("\nResult : %d\n", result);
-
-     free_ast(ast);
-     free(tokens);
-     return 0;
- }
+    free_ast(ast);
+    free(tokens);
+}

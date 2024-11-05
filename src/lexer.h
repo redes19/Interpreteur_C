@@ -2,8 +2,8 @@
 #define LEXER_H
 
 typedef enum {
-    NUMBER, // 0-9
-    IDENTIFIER, // a-z, A-Z
+    NUMBER = 0, // 0-9
+    IDENTIFIER = 1, // a-z, A-Z
     PLUS,   // +
     MINUS,  // -
     MULT,   // *
@@ -18,8 +18,11 @@ typedef enum {
 
 typedef struct {
     TokenType type;
-    int value;
-    char *identifier;
+    union {
+        int value;
+        char *identifier;
+        char *command;
+    };
 } Token;
 
 

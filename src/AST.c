@@ -165,12 +165,13 @@ void print_ast(ASTNode *node) {
     }
 }
 
-ASTNode *parser_ast(Token *tokens) {
+ASTNode *parser(Token *tokens) {
     Stack operators = create_stack(); // Contiendra les opérateurs
     Stack output = create_stack(); // Contiendra les noeuds de l'AST
 
     int pos = 0;
     Token current_token = tokens[pos];
+
 
     while (current_token.type != TOKEN_EOF) {
         if (current_token.type == NUMBER) { // Si le token est un nombre
@@ -212,12 +213,25 @@ ASTNode *parser_ast(Token *tokens) {
             Token nextToken = tokens[pos + 1];
             if (nextToken.type == ASSIGN) {
                 pos += 2;
-                print_ast(parser_ast(&tokens[pos]));
-                int value = eval_ast(parser_ast(&tokens[pos]));
+                //print_ast(parser(&tokens[pos]));
+                int value = eval_ast(parser(&tokens[pos]));
 
                 return create_ast_expression(current_token.identifier, value);
             }
             push(&output, create_ast_expression(current_token.identifier, 0));
+        } else if (current_token.type == PRINT) {
+            //printf("PRINT\n");
+            Token nextToken = tokens[pos + 1];
+            if (nextToken.type == LPAREN) {
+                //printf("1\n");
+                pos += 2;
+                Token next = tokens[pos];
+                if (next.type == IDENTIFIER) {
+                    printf("%d\n\n", getVariable(next.identifier));
+                } else {
+                    printf("%d\n", eval_ast(parser(&tokens[pos])));
+                }
+            }
         }
         pos++;
         current_token = tokens[pos];
@@ -293,13 +307,14 @@ void free_tokens(Token *tokens, int count) {
 }
 
 int getVariable(const char *name) {
+    //printf("getVariables %s\n", name);
     for (int i = 0; i < variable_count; i++) {
         if (strcmp(variables[i].name, name) == 0) {
             return variables[i].value;
         }
     }
 
-    printf("Erruer: Variable %s non déclarée\n", name);
+    printf("\nErreur: Variable non déclarée\n");
     exit(1);
 }
 

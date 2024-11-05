@@ -11,7 +11,7 @@ typedef struct ASTNode {
     int value;
     char name[MAX]; // Nom de la variable
     struct ASTNode *left;  // Fils gauche
-    struct ASTNode *right; // Fils droit
+    struct ASTNode *right; // Fils droite
 } ASTNode;
 
 typedef struct {
@@ -32,7 +32,7 @@ extern int variable_count;
 // Function
 void print_ast(ASTNode *node);
 
-ASTNode *parser_ast(Token *tokens);
+ASTNode *parser(Token *tokens);
 
 int eval_ast(ASTNode *node);
 
