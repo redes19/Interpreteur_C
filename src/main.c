@@ -32,8 +32,43 @@ char *read_file(const char *filename) {
     return content;
 }
 
- int main(int argc, char *argv[])
- {
+// Fonction REPL
+void start_repl() {
+    char input[MAX_INPUT_SIZE];
+
+    printf("Interpréteur REPL. Entrez 'exit' pour quitter.\n");
+    while (1) {
+        printf(">> ");
+        if (!fgets(input, MAX_INPUT_SIZE, stdin)) {
+            printf("Erreur de lecture de l'entrée\n");
+            continue;
+        }
+
+        // Enlever le caractère de nouvelle ligne
+        input[strcspn(input, "\n")] = 0;
+
+        // Condition de sortie
+        if (strcmp(input, "exit") == 0) {
+            break;
+        }
+
+        // Lexer et parser
+        Token *tokens = lexer(input);
+        Parser parser = init_parser(tokens);
+        ASTNode *ast = parse_expression(&parser);
+
+        // Evaluation et affichage du résultat
+        int result = eval(ast);
+        printf("Résultat : %d\n", result);
+
+        // Libérer la mémoire
+        free(tokens);
+        free_ast(ast);
+    }
+}
+
+int main(int argc, char *argv[])
+{
     const char *input;
 
     if (argc < 2) {
