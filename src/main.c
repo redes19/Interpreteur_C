@@ -85,10 +85,10 @@ void main()
     interpreteur("print(x)");
     interpreteur("l = x + 5");
     interpreteur("print(l)");
-    //interpreteur("y = 9");
-    //interpreteur("print(y");
-    //interpreteur("z = x + y");
-    //interpreteur("print(z)");
+    interpreteur("y = 9");
+    interpreteur("print(y");
+    interpreteur("z = x + y");
+    interpreteur("print(z)");
 
 
     free_ast(ast);
