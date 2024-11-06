@@ -33,6 +33,8 @@ extern int variable_count;
 void print_ast(ASTNode *node);
 
 ASTNode *parser_ast(Token *tokens);
+ASTNode* create_ast_node(int value);
+ASTNode* create_ast_operator(char operator, ASTNode *left, ASTNode *right);
 
 int eval_ast(ASTNode *node);
 
