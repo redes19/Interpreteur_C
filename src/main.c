@@ -44,8 +44,7 @@ char *read_file(const char *filename) {
     }
 
     Token *tokens = lexer(input);
-    Parser parser = init_parser(tokens);
-    ASTNode *ast = parse_expression(&parser);
+    ASTNode *ast = parser_ast(tokens);
 
     int result = eval_ast(ast);
     printf("Resultat : %d\n", result);
