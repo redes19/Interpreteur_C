@@ -11,5 +11,4 @@ add_executable(Interpreteur_C
         src/main.c
         src/AST.c
         src/AST.h
-        src/parser.c
 )
