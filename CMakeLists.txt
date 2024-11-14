@@ -12,19 +12,13 @@ set(SOURCE_FILES
         src/lexer.c
         src/main.c
         src/AST.c
-        src/parser.c
 )
 
 # Regrouper les fichiers d'en-tête
 set(HEADER_FILES
         src/lexer.h
         src/AST.h
-        src/parser.h
 )
 
 # Créer l'exécutable
 add_executable(Interpreteur_C ${SOURCE_FILES} ${HEADER_FILES})
-
-# Optionnel: Si tu as un sous-dossier avec des fichiers C, tu peux les ajouter de manière dynamique :
-# aux_source_directory(src SOURCES)
-# add_executable(Interpreteur_C ${SOURCES})
