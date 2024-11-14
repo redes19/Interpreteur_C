@@ -35,7 +35,7 @@ char *read_file(const char *filename) {
 // Fonction REPL pour interpréter les expressions en direct
 void repl() {
     char input[1024];
-    printf("Mode Interpréteur - Entrez une expression (ou 'exit' pour quitter) :\n");
+    printf("Mode Terminal - Entrez une expression (ou 'exit' pour quitter) :\n");
     while (1) {
         printf("> ");
         if (fgets(input, sizeof(input), stdin) == NULL) {
