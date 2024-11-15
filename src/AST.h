@@ -32,9 +32,7 @@ extern int variable_count;
 // Function
 void print_ast(ASTNode *node, int level);
 
-ASTNode *parser_ast(Token *tokens);
-ASTNode* create_ast_node(int value);
-ASTNode* create_ast_operator(char operator, ASTNode *left, ASTNode *right);
+ASTNode *parser(Token *tokens);
 
 int eval_ast(ASTNode *node);
 

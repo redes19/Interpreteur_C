@@ -31,12 +31,12 @@ char *read_file(const char *filename) {
     return content;
 }
 
+Token *tokens;
+ASTNode *ast;
 void interpreteur(const char *input) {
     tokens = lexer(input);
     ast = parser(tokens);
 
-    /*printf("\nretour node\n");
-    print_ast(ast);*/
     //printf("\nretour node\n");
     print_ast(ast, 0);
 
@@ -48,11 +48,26 @@ void interpreteur(const char *input) {
 
 }
 
+ int main(int argc, char *argv[])
+ {
+    const char *input;
 
+    if (argc < 2) {
+        printf("Aucun fichier fourni. Utilisation de l'expression par defaut.\n");
+        input = "3 + 4 * 2 / (5 - 2)";
+    } else {
+        // Lire les instructions à partir du fichier au lieu de l'écrire en dur
+        input = read_file(argv[1]);
+    }
+
+    interpreteur(input);
+
+    if (argc >= 2) free((void *)input);
 
     interpreteur("x = 5 + 5");
     interpreteur("l = x + 5");
     interpreteur("y = 9");
     interpreteur("z = x + y");
 
+    return 0;
 }
