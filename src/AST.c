@@ -135,33 +135,37 @@ ASTNode* create_ast_expression(const char *identifier_name, int value) {
 
 
 
-void print_ast(ASTNode *node) {
+void print_ast(ASTNode *node, int level) {
     if (node == NULL) {
         return;
     }
 
+    // Indentation en fonction du niveau
+    for (int i = 0; i < level; i++) {
+        printf("   ");
+    }
+
     if (node->type == ASSIGN) {
-        printf("%s = ", node->left->name);
-        print_ast(node->right);
+        printf("Assignation : %s =\n", node->left->name);
+        print_ast(node->right, level + 1);
     }
     else if (node->type == NUMBER) {
-        printf("%d", node->value);
+        printf("Nombre : %d\n", node->value);
+    }
+    else if (node->type == IDENTIFIER) {
+        printf("Identifiant : %s\n", node->name);
     }
     else {
-        // affiche les noeuds de l'AST
-        printf("(");
-        print_ast(node->left);
-
+        printf("Operateur : ");
         switch (node->type) {
-            case PLUS: printf(" + "); break;
-            case MINUS: printf(" - "); break;
-            case MULT: printf(" * "); break;
-            case DIV: printf(" / "); break;
-            default: break;
+            case PLUS: printf("+\n"); break;
+            case MINUS: printf("-\n"); break;
+            case MULT: printf("*\n"); break;
+            case DIV: printf("/\n"); break;
+            default: printf("Inconnu\n"); break;
         }
-
-        print_ast(node->right);
-        printf(")");
+        print_ast(node->left, level + 1);
+        print_ast(node->right, level + 1);
     }
 }
 
