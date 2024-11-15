@@ -43,7 +43,7 @@ void interpreteur(const char *input) {
     if (tokens[0].type == PRINT) {
     } else {
         int result = eval_ast(ast);
-        //printf("\nResultat : %d\n\n", result);
+        printf("\nResultat : %d\n\n", result);
     }
 
 }
@@ -61,13 +61,12 @@ void interpreteur(const char *input) {
     }
 
     interpreteur(input);
-
-    if (argc >= 2) free((void *)input);
-
     interpreteur("x = 5 + 5");
     interpreteur("l = x + 5");
     interpreteur("y = 9");
     interpreteur("z = x + y");
+
+    if (argc >= 2) free((void *)input);
 
     return 0;
 }
