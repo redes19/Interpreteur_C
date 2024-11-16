@@ -37,13 +37,10 @@ void interpreteur(const char *input) {
     tokens = lexer(input);
     ast = parser(tokens);
 
-    //printf("\nretour node\n");
-    print_ast(ast, 0);
 
     if (tokens[0].type == PRINT) {
     } else {
-        int result = eval_ast(ast);
-        printf("\nResultat : %d\n\n", result);
+        eval_ast(ast);
     }
 
 }
@@ -62,9 +59,13 @@ void interpreteur(const char *input) {
 
     interpreteur(input);
     interpreteur("x = 5 + 5");
+    interpreteur("print(x)");
     interpreteur("l = x + 5");
+    interpreteur("print(l)");
     interpreteur("y = 9");
+    interpreteur("print(y");
     interpreteur("z = x + y");
+    interpreteur("print(z)");
 
     if (argc >= 2) free((void *)input);
 
