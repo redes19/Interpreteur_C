@@ -328,7 +328,7 @@ int getVariable(const char *name) {
         }
     }
 
-    printf("\nErreur: Variable non declaree\n");
+    printf("\nErreur: Variable non declaree : %s\n", name);
     exit(1);
 }
 
