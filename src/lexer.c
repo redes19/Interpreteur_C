@@ -74,8 +74,7 @@ Token *lexer(const char *input)
         char pos_char = input[position];
 
         if (pos_char == '\n') {
-            position++;
-            continue;
+            break;
         }
 
         if(pos_char == ' ') {
