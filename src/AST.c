@@ -36,20 +36,18 @@ void push(Stack *stack, void *value) {
 void *pop(Stack *stack) {
     if(!is_empty(stack)){
         return stack->data[stack->top--];
-    } else {
-        printf("erreur 2\n");
-        exit(1);
     }
+    printf("Entree invalide\n");
+    exit(2);
 }
 
 // Fonction pour voir la valeur au sommet de la pile
 void *peek(Stack *stack) {
     if (!is_empty(stack)) {
         return stack->data[stack->top];
-    } else {
-        printf("erreur 3\n");
-        exit(1);
     }
+    printf("Entree invalide\n");
+    exit(3);
 }
 
 // Fonction qui retourne la priorité d'un oparateur
@@ -138,7 +136,7 @@ ASTNode* create_ast_expression(const char *identifier_name, int value) {
 void print_ast(ASTNode *node, int level) {
     static int is_first_call = 1;
     if (is_first_call) {
-        printf("Arbre de syntaxe abstraite :\n");
+        printf("\nArbre de syntaxe abstraite :\n");
         printf("-----------------------------\n");
         is_first_call = 0;
     }

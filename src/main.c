@@ -67,13 +67,29 @@ void repl() {
             break;
         }
 
+        if (strlen(input) == 0) {
+            printf("Aucune entree detectee. Veuillez entrer une expression.\n");
+            continue;
+        }
+
         // Analyser et évaluer l'expression
         tokens = lexer(input);
+        if (!tokens) {
+            printf("Erreur lors de l'analyse lexicale.\n");
+            continue;
+        }
+
         ast = parser(tokens);
+        if (!ast) {
+            printf("Erreur lors de l'analyse syntaxique.\n");
+            free(tokens);
+            continue;
+        }
 
         // Évaluer l'AST et afficher le résultat
         int result = eval_ast(ast);
         printf("%d\n", result);
+        print_ast(ast, 0);
 
         // Libérer les ressources
         free(tokens);
