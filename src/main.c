@@ -37,13 +37,13 @@ void interpreteur(const char *input) {
     tokens = lexer(input);
     ast = parser(tokens);
 
-    //printf("\nretour node\n");
     print_ast(ast, 0);
 
     if (tokens[0].type == PRINT) {
     } else {
         int result = eval_ast(ast);
-        printf("\nResultat : %d\n\n", result);
+        printf("\nResultat : %d\n", result);
+        printf("-----------------------------\n");
     }
 
 }

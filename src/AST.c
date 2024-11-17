@@ -136,6 +136,13 @@ ASTNode* create_ast_expression(const char *identifier_name, int value) {
 
 
 void print_ast(ASTNode *node, int level) {
+    static int is_first_call = 1;
+    if (is_first_call) {
+        printf("Arbre de syntaxe abstraite :\n");
+        printf("-----------------------------\n");
+        is_first_call = 0;
+    }
+
     if (node == NULL) {
         return;
     }
