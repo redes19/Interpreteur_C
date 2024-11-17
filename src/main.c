@@ -38,14 +38,18 @@ void interpreteur(const char *input) {
     ast = parser(tokens);
 
     print_ast(ast, 0);
+    const int res = eval_ast(ast);
+    static int is_first_call_res = 1;
+    if (is_first_call_res) {
+        printf("\nResultat : %d\n", res);
+        printf("-----------------------------\n");
+        is_first_call_res = 0;
+    }
 
     if (tokens[0].type == PRINT) {
     } else {
-        int result = eval_ast(ast);
-        printf("\nResultat : %d\n", result);
-        printf("-----------------------------\n");
+        eval_ast(ast);
     }
-
 }
 
 // Fonction REPL pour interpréter les expressions en direct
@@ -108,6 +112,7 @@ int main(int argc, char *argv[]) {
     } else {
         // Lire les instructions à partir du fichier fourni
         input = read_file(argv[1]);
+        printf("Contenu du fichier %s :\n%s\n", argv[1], input);
     }
 
     interpreteur(input);
