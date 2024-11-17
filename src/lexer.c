@@ -73,6 +73,11 @@ Token *lexer(const char *input)
     while (input[position] != '\0') {
         char pos_char = input[position];
 
+        if (pos_char == '\0') {
+            position++;
+            continue;
+        }
+
         if(pos_char == ' ') {
             position++;
             continue;

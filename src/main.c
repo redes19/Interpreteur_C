@@ -91,8 +91,7 @@ void repl() {
         }
 
         // Évaluer l'AST et afficher le résultat
-        int result = eval_ast(ast);
-        printf("%d\n", result);
+        eval_ast(ast);
         print_ast(ast, 0);
 
         // Libérer les ressources
@@ -108,11 +107,13 @@ int main(int argc, char *argv[]) {
     if (argc < 2) {
         // Si aucun fichier n'est fourni, lancer le REPL
         printf("Aucun fichier fourni. Lancement du mode REPL...\n");
-        repl();
+        //fonction qui permet de lire les instructions à partir de la console
+        //repl();
     } else {
         // Lire les instructions à partir du fichier fourni
         input = read_file(argv[1]);
         printf("Contenu du fichier %s :\n%s\n", argv[1], input);
+
     }
 
     interpreteur(input);
@@ -127,5 +128,7 @@ int main(int argc, char *argv[]) {
 
     if (argc >= 2) free((void *)input);
 
+    free_ast(ast);
+    free(tokens);
     return 0;
 }
