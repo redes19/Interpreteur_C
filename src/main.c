@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "lexer.h"
 #include "AST.h"
-
 
 // Fonction pour lire les instructions d'un fichier
 char *read_file(const char *filename) {
@@ -51,14 +51,50 @@ void interpreteur(const char *input) {
  int main(int argc, char *argv[])
  {
     const char *input;
+// Fonction REPL pour interpréter les expressions en direct
+void repl() {
+    char input[1024];
+    printf("Mode Terminal - Entrez une expression (ou 'exit' pour quitter) :\n");
+    while (1) {
+        printf("> ");
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            break;
+        }
 
-    if (argc < 2) {
-        printf("Aucun fichier fourni. Utilisation de l'expression par defaut.\n");
-        input = "3 + 4 * 2 / (5 - 2)";
-    } else {
-        // Lire les instructions à partir du fichier au lieu de l'écrire en dur
-        input = read_file(argv[1]);
+        // Retirer le saut de ligne
+        input[strcspn(input, "\n")] = '\0';
+
+        // Commande pour quitter le REPL
+        if (strcmp(input, "exit") == 0) {
+            printf("Quitter...\n");
+            break;
+        }
+
+        // Analyser et évaluer l'expression
+        Token *tokens = lexer(input);
+        ASTNode *ast = parser_ast(tokens);
+
+        // Évaluer l'AST et afficher le résultat
+        int result = eval_ast(ast);
+        printf("%d\n", result);
+
+        // Libérer les ressources
+        free(tokens);
+        free_ast(ast);
     }
+}
+
+// Point d'entrée du programme
+int main(int argc, char *argv[]) {
+    // Vérifier si un fichier a été fourni
+    if (argc < 2) {
+        // Si aucun fichier n'est fourni, lancer le REPL
+        printf("Aucun fichier fourni. Lancement du mode REPL...\n");
+        repl();
+    } else {
+        // Lire les instructions à partir du fichier fourni
+        const char *filename = argv[1];
+        char *input = read_file(filename);
 
     interpreteur(input);
     interpreteur("x = 5 + 5");
