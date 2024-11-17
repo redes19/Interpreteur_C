@@ -37,6 +37,7 @@ void interpreteur(const char *input) {
     tokens = lexer(input);
     ast = parser(tokens);
 
+    print_ast(ast, 0);
 
     if (tokens[0].type == PRINT) {
     } else {

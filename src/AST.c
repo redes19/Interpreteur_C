@@ -146,7 +146,7 @@ void print_ast(ASTNode *node, int level) {
     }
 
     if (node->type == ASSIGN) {
-        printf("Assignation : %s", node->left->name);
+        printf("Assignation : %s\n", node->left->name);
     }
     else if (node->type == NUMBER) {
         printf("Nombre : %d\n", node->value);
