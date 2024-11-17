@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
         // Si aucun fichier n'est fourni, lancer le REPL
         printf("Aucun fichier fourni. Lancement du mode REPL...\n");
         //fonction qui permet de lire les instructions à partir de la console
-        //repl();
+        repl();
     } else {
         // Lire les instructions à partir du fichier fourni
         input = read_file(argv[1]);
