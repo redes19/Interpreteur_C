@@ -48,9 +48,6 @@ void interpreteur(const char *input) {
 
 }
 
- int main(int argc, char *argv[])
- {
-    const char *input;
 // Fonction REPL pour interpréter les expressions en direct
 void repl() {
     char input[1024];
@@ -71,8 +68,8 @@ void repl() {
         }
 
         // Analyser et évaluer l'expression
-        Token *tokens = lexer(input);
-        ASTNode *ast = parser_ast(tokens);
+        tokens = lexer(input);
+        ast = parser(tokens);
 
         // Évaluer l'AST et afficher le résultat
         int result = eval_ast(ast);
@@ -86,6 +83,7 @@ void repl() {
 
 // Point d'entrée du programme
 int main(int argc, char *argv[]) {
+    const char *input = NULL;
     // Vérifier si un fichier a été fourni
     if (argc < 2) {
         // Si aucun fichier n'est fourni, lancer le REPL
@@ -93,8 +91,8 @@ int main(int argc, char *argv[]) {
         repl();
     } else {
         // Lire les instructions à partir du fichier fourni
-        const char *filename = argv[1];
-        char *input = read_file(filename);
+        input = read_file(argv[1]);
+    }
 
     interpreteur(input);
     interpreteur("x = 5 + 5");
